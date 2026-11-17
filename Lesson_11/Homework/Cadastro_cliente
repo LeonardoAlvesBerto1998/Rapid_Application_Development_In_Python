@@ -1,0 +1,76 @@
+#Objetivo: Construir uma aplicação com classe, widgets ttk, grid, callbacks e validação
+#O aplicativo devera:
+#1-Criar a classe cadastroApp, recebendo a janela no construtor 
+#2-Guardar campos em self e organizar widgets com grid
+#3-Validar dados com um método cadastrar()
+#4-Adicionar registros a Listbox e limpar o formulário
+#5-Manter a interface em memória (sem banco de dados nesta aula)
+
+
+import tkinter as tk
+from tkinter import messagebox, ttk
+
+class cadastroApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Cadastro de Pessoas")
+        self.root.geometry("480x360")
+
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
+
+        self.container = ttk.Frame(self.root, padding=12)
+        self.container.grid(row=0, column=0, sticky="nsew")
+
+        self.container.columnconfigure(1, weight=1)
+        self.container.rowconfigure(4, weight=1)
+
+        self.lbl_nome = ttk.Label(self.container, text="Nome:")
+        self.lbl_nome.grid(row=0, column=0, sticky="w", padx=5, pady=6)
+
+        self.ent_nome = ttk.Entry(self.container)
+        self.ent_nome.grid(row=0, column=1, sticky="ew", padx=5, pady=6)
+
+        self.lbl_email = ttk.Label(self.container, text="E-mail:")
+        self.lbl_email.grid(row=1, column=0, sticky="w", padx=5, pady=6)
+
+        self.ent_email = ttk.Entry(self.container)
+        self.ent_email.grid(row=1, column=1, sticky="ew", padx=5, pady=6)
+
+        self.lbl_fone = ttk.Label(self.container, text="Telefone:")
+        self.lbl_fone.grid(row=2, column=0, sticky="w", padx=5, pady=6)
+
+        self.ent_fone = ttk.Entry(self.container)
+        self.ent_fone.grid(row=2, column=1, sticky="ew", padx=5, pady=6)
+
+        self.btn_cadastrar = ttk.Button(self.container, text="Cadastrar", command=self.cadastrar)
+        self.btn_cadastrar.grid(row=3, column=0, columnspan=2, sticky="ew", padx=5, pady=10)
+
+        self.lista_box = tk.Listbox(self.container, font=("TkDefaultFont", 10))
+        self.lista_box.grid(row=4, column=0, columnspan=2, sticky="nsew", padx=5, pady=5)
+
+        self.scrollbar = ttk.Scrollbar(self.container, orient="vertical", command=self.lista_box.yview)
+        self.scrollbar.grid(row=4, column=2, sticky="ns", pady=5)
+        self.lista_box.configure(yscrollcommand=self.scrollbar.set)
+
+    def cadastrar(self):
+        nome = self.ent_nome.get().strip()
+        email = self.ent_email.get().strip()
+        fone = self.ent_fone.get().strip()
+
+        if not nome or not email or not fone:
+            messagebox.showwarning("Atenção", "Preencha todos os campos!")
+            return
+
+        registro = f"Nome: {nome} | E-mail: {email} | Telefone: {fone}"
+        self.lista_box.insert(tk.END, registro)
+
+        self.ent_nome.delete(0, tk.END)
+        self.ent_email.delete(0, tk.END)
+        self.ent_fone.delete(0, tk.END)
+        self.ent_nome.focus()
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = cadastroApp(root)
+    root.mainloop()
